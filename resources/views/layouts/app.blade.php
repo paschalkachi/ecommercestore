@@ -21,6 +21,12 @@
 </head>
     
     <body class="gradient-bg">
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
     <svg class="d-none">
     <symbol id="icon_nav" viewBox="0 0 25 18">
       <rect width="25" height="2" />
@@ -303,7 +309,7 @@
         <div class="overflow-hidden">
           <ul class="navigation__list list-unstyled position-relative">
             <li class="navigation__item">
-              <a href="index.html" class="navigation__link">Home</a>
+              <a href="{{ route('home.index') }}" class="navigation__link">Home</a>
             </li>
             <li class="navigation__item">
               <a href="shop.html" class="navigation__link">Shop</a>
@@ -380,11 +386,11 @@
   </div>
 
 
-  <header id="header" class="header header-fullwidth header-transparent-bg">
+  <header id="header" class="header header-fullwidth header-transparent-bg mb-30">
     <div class="container">
       <div class="header-desk header-desk_type_1">
         <div class="logo">
-          <a href="index.html">
+          <a href="{{ route('home.index') }}">
             <img src="assets/images/logo.png" alt="Uomo" class="logo__image d-block" />
           </a>
         </div>
@@ -392,7 +398,7 @@
         <nav class="navigation">
           <ul class="navigation__list list-unstyled d-flex">
             <li class="navigation__item">
-              <a href="index.html" class="navigation__link">Home</a>
+              <a href="{{ route('home.index') }}" class="navigation__link">Home</a>
             </li>
             <li class="navigation__item">
               <a href="shop.html" class="navigation__link">Shop</a>
@@ -456,14 +462,37 @@
             </div>
           </div>
 
+          @guest            
           <div class="header-tools__item hover-container">
-            <a href="login.html" class="header-tools__item">
+            @auth
+                <div class="header-tools__item">
+                    <span class="text-sm">Welcome, {{ Auth::user()->name }}</span>
+                    <form method="POST" action="{{ route('logout') }}" class="inline">
+                        @csrf
+                        <button type="submit" class="btn-link ml-2">Logout</button>
+                    </form>
+                </div>
+            @else
+                <a href="{{ route("login") }}" class="header-tools__item">
+            @endauth
               <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
                 xmlns="http://www.w3.org/2000/svg">
                 <use href="#icon_user" />
               </svg>
             </a>
           </div>
+
+          @else
+          <div class="header-tools__item hover-container">
+            <a href="{{ Auth::user()->utype === 'ADM' ? route('admin.index'): route('user.index') }}" class="header-tools__item">
+              <span class="pr-6px">{{ Auth::user()->name }}</span>
+              <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <use href="#icon_user" />
+              </svg>
+            </a>
+          </div>
+          @endguest
 
           <a href="wishlist.html" class="header-tools__item">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -604,7 +633,7 @@
   </footer>
 
 
-  <footer class="footer-mobile container w-100 px-5 d-md-none bg-body">
+  <footer class="footer-mobile container w-100 px-5 d-md-none bg-body" style="background-color: gray">
     <div class="row text-center">
       <div class="col-4">
         <a href="index.html" class="footer-mobile__link d-flex flex-column align-items-center">
