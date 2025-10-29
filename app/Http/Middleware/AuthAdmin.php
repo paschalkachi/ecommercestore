@@ -3,6 +3,8 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Container\Attributes\Auth;
+use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -15,6 +17,17 @@ class AuthAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        return $next($request);
-    }
-}
+        if (Auth::check())     
+            {
+                if(Auth::user()->utype ==="ADM")
+                {
+                    return $next($request);
+                }else{
+                    Session::flush();
+                    return redirect()->('login');
+                }
+
+            }else{
+                return redirect()->route('login');
+            }
+        }
