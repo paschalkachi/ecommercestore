@@ -84,6 +84,7 @@
         </div>
       </div>
     </section>
+    
     <div class="container mw-1620 bg-white border-radius-10">
       <div class="mb-3 mb-xl-5 pt-1 pb-4"></div>
       <section class="category-carousel container">
