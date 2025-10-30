@@ -13,7 +13,19 @@
       <div class="tab-content pt-2" id="login_register_tab_content">
         <div class="tab-pane fade show active" id="tab-item-login" role="tabpanel" aria-labelledby="login-tab">
           
-            <div class="login-form">
+          {{-- Form Error Message --}}
+           @if ($errors->any())
+           <div class="alert alert-danger">
+           <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+          </ul>
+         </div>
+          @endif
+          
+          {{-- Login Form --}}
+          <div class="login-form">
             <form method="POST" action="{{ route('login') }}" name="login-form" id="login-form" class="needs-validation" novalidate="">
                 @csrf
 

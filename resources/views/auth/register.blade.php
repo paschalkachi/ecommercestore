@@ -13,8 +13,19 @@
       <div class="tab-content pt-2" id="login_register_tab_content">
         <div class="tab-pane fade show active" id="tab-item-register" role="tabpanel" aria-labelledby="register-tab">
             
-            {{-- Register Form --}}
-            <div class="register-form">
+            {{-- Form Error message --}}
+            @if ($errors->any())
+           <div class="alert alert-danger">
+           <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+          </ul>
+         </div>
+          @endif
+
+            {{-- Register Form  --}}
+          <div class="register-form">
             <form method="POST" action="{{ route('register') }}" name="register-form" id="register-form" class="needs-validation" novalidate="">
                 @csrf
                 <div class="form-floating mb-3">
@@ -77,7 +88,7 @@
                   manage access to your account, and for other purposes described in our privacy policy.</p>
               </div>
 
-              <button class="btn btn-primary w-100 text-uppercase" onclick="event.preventDefault(); document.getElementById('register-form').submit();"  type="submit">
+              <button class="btn btn-primary w-100 text-uppercase"  type="submit">
                 Register
             </button>
 
@@ -91,6 +102,7 @@
       </div>
     </section>
   </main>    
+@endsection
 
 {{-- <x-guest-layout>
     <form method="POST" action="{{ route('register') }}">
@@ -144,4 +156,4 @@
         </div>
     </form>
 </x-guest-layout> --}}
-@endsection
+
