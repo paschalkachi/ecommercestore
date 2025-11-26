@@ -11,10 +11,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('order_items', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
+       Schema::create('order_items', function (Blueprint $table) {
+    $table->engine = 'InnoDB';
+    $table->id();
+    $table->unsignedBigInteger('product_id');
+    $table->unsignedBigInteger('order_id');
+    $table->decimal('price', 8, 2);
+    $table->integer('quantity');
+    $table->longText('options')->nullable();
+    $table->boolean('rstatus')->default(false);
+    $table->timestamps();
+
+    $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+    $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
+});
+
     }
 
     /**

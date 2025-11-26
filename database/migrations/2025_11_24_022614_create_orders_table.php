@@ -13,7 +13,27 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('user_Id')->unsigned();
+            $table->decimal('sub_total');
+            $table->decimal('discount')->default(0);
+            $table->decimal('tax');
+            $table->decimal('total');
+            $table->string('name');
+            $table->string('phone');
+            $table->string('locality');
+            $table->string('address');
+            $table->string('city');
+            $table->string('state');
+            $table->string('country');
+            $table->string('landmark')->nullable();
+            $table->string('zip');
+            $table->string('type')->default('home');
+            $table->enum('status',['ordered', 'delivered', 'canceled'])->default('ordered');
+            $table->boolean('is_shippin_different')->default(false);
+            $table->date('delivered_date')->nullable();
+            $table->date('canceled_date')->nullable();
             $table->timestamps();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
