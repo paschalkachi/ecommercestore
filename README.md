@@ -88,13 +88,14 @@ php artisan serve
 http://127.0.0.1:8000
 
 
-Features available:
+## Features available:
 Add products to cart
 Apply coupon codes (fixed and percentage)
 Add/remove products from wishlist
 View cart totals including tax and discounts
 Manage products via admin dashboard
 Apply and remove coupons dynamically
+
 
 License
 
