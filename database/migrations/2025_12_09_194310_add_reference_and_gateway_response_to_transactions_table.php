@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('month_names', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');            
+        Schema::table('transactions', function (Blueprint $table) {
+            $table->string('reference')->nullable()->after('order_id');
+            $table->text('gateway_response')->nullable()->after('status');
         });
     }
 
@@ -22,6 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('month_names');
+        Schema::table('transactions', function (Blueprint $table) {
+            $table->dropColumn(['reference', 'gateway_response']);
+        });
     }
 };

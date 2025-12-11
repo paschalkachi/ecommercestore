@@ -6,7 +6,12 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PaymentController as ControllersPaymentController;
+//use App\Http\Controllers\PaystackController;
+use App\Http\Controllers\SearchController;
 use App\Http\Middleware\AuthAdmin;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Route;
 use Surfsidemedia\Shoppingcart\Facades\Cart;
 
@@ -25,6 +30,7 @@ require __DIR__.'/auth.php';
 Route::get('/',[HomeController::class,'index'])->name('home.index');
 Route::get('/shop',[ShopController::class,'index'])->name('shop.index');
 Route::get('/shop/{product_slug}',[ShopController::class,'product_details'])->name('shop.product.details');
+Route::get('/search', [SearchController::class, 'index'])->name('search.index');
 
 // Cart Routes
 Route::get('/cart',[CartController::class,'index'])->name('cart.index');
@@ -49,13 +55,23 @@ Route::post('/wishlist/move-to-cart/{rowId}', [App\Http\Controllers\WishlistCont
 // Route for checkout page
 Route::get('/checkout', [App\Http\Controllers\CartController::class,'checkout'])->name('cart.checkout');
 Route::post('/place-an-order', [App\Http\Controllers\CartController::class,'place_an_order'])->name('cart.place.an.order');
+Route::get('/payment/callback', [CartController::class, 'paystackCallback'])->name('payment.callback');
 Route::get('/order-confirmation', [App\Http\Controllers\CartController::class,'order_confirmation'])->name('cart.order-confirmation');
 
+// Route for contact us page
+Route::get('/contact-us', [App\Http\Controllers\HomeController::class,'contact'])->name('home.contact');
+Route::post('/contact-store', [App\Http\Controllers\HomeController::class,'contact_store'])->name('home.contact.store');
+
+
+// user Route Group
 Route::middleware('auth')->group(function () {
-    Route::get('/account.dashboard', [UserController::class,'index'])->name('user.index');
+    Route::get('/account-dashboard', [UserController::class,'index'])->name('user.index');
+    Route::get('/account-orders', [UserController::class,'orders'])->name('user.orders');
+    Route::get('/account-orders/{order_id}/details', [UserController::class,'order_details'])->name('user.order-details');
+    Route::put('/account-orders/cancel-order', [UserController::class,'order_cancel'])->name('user.order.cancel');
 });
 
-Route::middleware('auth', AuthAdmin::class)->group(function () {
+Route::middleware(['auth', AuthAdmin::class])->group(function () {
     Route::get('/admin', [AdminController::class,'index'])->name('admin.index');
     
     // Admin Brand Routes
@@ -90,4 +106,34 @@ Route::middleware('auth', AuthAdmin::class)->group(function () {
     Route::get('admin.coupons.edit/{id}', [AdminController::class,'coupon_edit'])->name('admin.coupons.edit');
     Route::put('admin.coupons.update/{id}', [AdminController::class,'coupon_update'])->name('admin.coupons.update');
     Route::delete('admin.coupons.delete/{id}', [AdminController::class,'coupon_delete'])->name('admin.coupons.delete');
-});
+
+    // Admin Orders Route
+    Route::get('/admin/orders', [AdminController::class,'orders'])->name('admin.orders.index');
+    Route::get('/admin/orders/{order_id}', [AdminController::class,'order_details'])->name('admin.orders.details');
+    Route::put('/admin/orders/update-status',[AdminController::class,'update_order_status'])->name('admin.orders.status.update');
+
+    // Route to display home page slides
+    Route::get('/admin/slides', [AdminController::class,'slides'])->name('admin.slides.index');
+    Route::get('/admin/slides/add', [AdminController::class,'slides_add'])->name('admin.slides.add');
+    Route::post('/admin/slides/store', [AdminController::class,'slides_store'])->name('admin.slides.store');
+    Route::get('admin.slides.edit/{id}', [AdminController::class,'slides_edit'])->name('admin.slides.edit');
+    Route::put('admin.slides.update/{id}', [AdminController::class,'slides_update'])->name('admin.slides.update');
+    Route::delete('admin.slides.delete/{id}', [AdminController::class,'slides_delete'])->name('admin.slides.delete');
+
+    // Route to view and delete all contact request
+    Route::get('/admin/contact', [AdminController::class,'contacts'])->name('admin.contacts');
+    Route::delete('/admin/contact/delete/{id}', [AdminController::class,'contact_delete'])->name('admin.contact.delete');
+
+    // Paystack payment routes
+// Route::get('/payment', [PaystackController::class, 'paystackInitialize'])
+//      ->name('paystack.init');
+
+// Route::post('/paystack/verify', [PaystackController::class, 'paystackVerify'])
+//      ->name('paystack.verify');
+
+// Route::post('/paystack/webhook', [PaystackController::class, 'paystackWebhook'])
+//      ->name('paystack.webhook');
+
+
+
+ });

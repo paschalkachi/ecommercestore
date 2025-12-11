@@ -28,6 +28,13 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        
+         $user = Auth::user();
+        if ($user->utype === 'ADM') {
+        // Redirect admin to the dashboard route
+        return redirect(route('admin.index'));
+    }
+
         return redirect()->intended(route('home.index', absolute: false));
     }
 

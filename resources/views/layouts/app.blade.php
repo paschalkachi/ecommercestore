@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
-        <title>Surfside Media</title>
+        <title>SURFSIDE MEDIA</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta http-equiv="content-type" content="text/html; charset=utf-8" />
         <meta name="author" content="surfside media" />
@@ -13,6 +13,8 @@
         <link href="https://fonts.googleapis.com/css2?family=Allura&amp;display=swap" rel="stylesheet">
         <link rel="stylesheet" href="{{ asset('assets/css/plugins/swiper.min.css') }}" type="text/css" />
         <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" type="text/css" />
+
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/sweetalert.min.css') }}"> {{-- Alert to confirm that a user wants to delete a form --}}
         <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" type="text/css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
         integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw=="
@@ -21,12 +23,12 @@
 </head>
     
     <body class="gradient-bg">
-    @if (session('success'))
+    {{-- @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-    @endif
+    @endif --}}
     <svg class="d-none">
     <symbol id="icon_nav" viewBox="0 0 25 18">
       <rect width="25" height="2" />
@@ -257,7 +259,18 @@
     }
 
     .logo__image {
-      max-width: 220px;
+      max-width: 50px;
+    }
+
+    /* .logo{
+       width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    } */
+
+    .logo_text {
+      margin-top: 9px;
     }
   </style>
   <div class="header-mobile header_sticky">
@@ -320,8 +333,10 @@
             <li class="navigation__item">
               <a href="about.html" class="navigation__link">About</a>
             </li>
+
+            {{-- contact us link --}}
             <li class="navigation__item">
-              <a href="contact.html" class="navigation__link">Contact</a>
+              <a href="{{ route('home.contact') }}" class="navigation__link">Contact</a>
             </li>
           </ul>
         </div>
@@ -390,12 +405,13 @@
     <div class="container">
       <div class="header-desk header-desk_type_1">
         <div class="logo">
-          <a href="{{ route('home.index') }}">
-            <img src="{{ asset('assets/images/logo.png') }}" alt="Uomo" class="logo__image d-block" />
+          <a href="{{ route('home.index') }}" class="d-flex align-items-center gap-0">
+            <img src="{{ asset('assets/images/logo4.png') }}" alt="Uomo" class="logo__image d-block" /> 
+            <h2 class="logo_text">DRESSMART</h2>
           </a>
         </div>
 
-        <nav class="navigation">
+        <nav class="navigation" style="margin-left: 30px">
           <ul class="navigation__list list-unstyled d-flex">
             <li class="navigation__item">
               <a href="{{ route('home.index') }}" class="navigation__link">Home</a>
@@ -410,7 +426,7 @@
               <a href="about.html" class="navigation__link">About</a>
             </li>
             <li class="navigation__item">
-              <a href="contact.html" class="navigation__link">Contact</a>
+              <a href="{{ route('home.contact') }}" class="navigation__link">Contact</a>
             </li>
           </ul>
         </nav>
@@ -431,7 +447,7 @@
               <form action="#" method="GET" class="search-field container">
                 <p class="text-uppercase text-secondary fw-medium mb-4">What are you looking for?</p>
                 <div class="position-relative">
-                  <input class="search-field__input search-popup__input w-100 fw-medium" type="text"
+                  <input class="search-field__input search-popup__input w-100 fw-medium" id="search.input" type="text"
                     name="search-keyword" placeholder="Search products" />
                   <button class="btn-icon search-popup__submit" type="submit">
                     <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
@@ -442,21 +458,10 @@
                   <button class="btn-icon btn-close-lg search-popup__reset" type="reset"></button>
                 </div>
 
-                <div class="search-popup__results">
-                  <div class="sub-menu search-suggestion">
-                    <h6 class="sub-menu__title fs-base">Quicklinks</h6>
-                    <ul class="sub-menu__list list-unstyled">
-                      <li class="sub-menu__item"><a href="shop2.html" class="menu-link menu-link_us-s">New Arrivals</a>
-                      </li>
-                      <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Dresses</a></li>
-                      <li class="sub-menu__item"><a href="shop3.html" class="menu-link menu-link_us-s">Accessories</a>
-                      </li>
-                      <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Footwear</a></li>
-                      <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Sweatshirt</a></li>
-                    </ul>
-                  </div>
+                <div class="search-popup__results">     
+                  <ul id="box-content-search">
 
-                  <div class="search-result row row-cols-5"></div>
+                  </ul>
                 </div>
               </form>
             </div>
@@ -545,12 +550,13 @@
       <div class="row row-cols-lg-5 row-cols-2">
         <div class="footer-column footer-store-info col-12 mb-4 mb-lg-0">
           <div class="logo">
-            <a href="index.html">
-              <img src="{{ asset('assets/images/logo.png') }}" alt="SurfsideMedia" class="logo__image d-block" />
-            </a>
+            <a href="{{ route('home.index') }}" class="d-flex align-items-center gap-0">
+              <img src="{{ asset('assets/images/logo4.png') }}" alt="Uomo" class="logo__image d-block" /> 
+              <h2 class="logo_text">DRESSMART</h2>
+          </a>
           </div>
           <p class="footer-address">123 Beach Avenue, Surfside City, CA 00000</p>
-          <p class="m-0"><strong class="fw-medium">contact@surfsidemedia.in</strong></p>
+          <p class="m-0"><strong class="fw-medium">contact@dressmart.in</strong></p>
           <p><strong class="fw-medium">+1 000-000-0000</strong></p>
 
           <ul class="social-links list-unstyled d-flex flex-wrap mb-0">
@@ -648,7 +654,15 @@
 
     <div class="footer-bottom">
       <div class="container d-md-flex align-items-center">
-        <span class="footer-copyright me-auto">©2024 Surfside Media</span>
+        <span class="footer-copyright me-auto">
+          <p class="text-sm">
+            Built by 
+            <a href="https://github.com/paschalkachi" target="_blank" class="text-dark hover:text-blue-300">
+              Paschal
+            </a> 
+            &copy; <span id="year"></span>
+          </p>
+        </span>
         <div class="footer-settings d-md-flex align-items-center">
           <a href="privacy-policy.html">Privacy Policy</a> &nbsp;|&nbsp; <a href="terms-conditions.html">Terms &amp;
             Conditions</a>
@@ -701,9 +715,57 @@
   <script src="{{ asset('assets/js/plugins/jquery.min.js') }}"></script>
   <script src="{{ asset('assets/js/plugins/bootstrap.bundle.min.js') }}"></script>
   <script src="{{ asset('assets/js/plugins/bootstrap-slider.min.js') }}"></script>
+
+  <script src="{{ asset('js/sweetalert.min.js') }}"></script> {{-- Alert to confirm that a user wants to delete a form --}}    
   <script src="{{ asset('assets/js/plugins/swiper.min.js') }}"></script>
-  <script src="{{ asset('assets/js/plugins/countdown.js') }}"></script>
-  @stack("scripts")
+  <script src="{{ asset('assets/js/plugins/countdown.js') }}"></script>  
+  <script>
+$(function() {
+    $("#search-input").on("keyup", function () {
+        var searchQuery = $(this).val();
+
+        if (searchQuery.length > 2) {
+            $.ajax({
+                type: "GET",
+                url: "{{ route('search.index') }}",
+                data: { query: searchQuery },   
+                dataType: 'json',
+                success: function(data) {
+
+                    $("#box-content-search").html('');
+
+                    $.each(data, function(index, item) {
+
+                        var url = "{{ route('shop.product.details', ['product_slug' => 'product_slug_pls']) }}";
+                        var link = url.replace('product_slug_pls', item.slug);
+
+                        $("#box-content-search").append(`
+                            <li>
+                                <div class="product-item gap14 mb-10">
+                                    <div class="image no-bg">
+                                        <img src="{{ asset('uploads/products') }}/${item.image}" alt="${item.name}">
+                                    </div>
+                                    <div class="flex items-center justify-between gap-20 flex-grow">
+                                        <div class="name">
+                                            <a href="${link}" class="body-text">${item.name}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-10"><div class="divider"></div></div>
+                            </li>
+                        `);
+                    });
+                }
+            });
+        }
+    });
+});
+
+document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+
+
   <script src="{{ asset('assets/js/theme.js') }}"></script>
+  @stack("scripts")
 </body>
 </html>

@@ -2,7 +2,7 @@
 @section('content')
     <main class="pt-90">
         <div class="mb-4 pb-4"></div>
-        <section class="shop-checkout container">
+        <section class="shop-checkout container" style="margin-top: 80px;">
         <h2 class="page-title">Order Received</h2>
         <div class="checkout-steps">
             <a href="javascript:void(0)" class="checkout-steps__item active">
@@ -52,11 +52,12 @@
 
             <div class="order-info__item">
                 <label>Total</label>
-                <span>{{ $order->transaction }}</span>
+                <span>{{ $order->total }}</span>
             </div>
+
             <div class="order-info__item">
                 <label>Payment Method</label>
-                <span>{{ $order->transaction->mode }}</span>
+                <span>{{ $order->transaction->method }}</span>
             </div>
             </div>
             <div class="checkout__totals-wrapper">
@@ -71,28 +72,24 @@
                 </thead>
 
                 <tbody>
-                    @foreach ($order->orderItem as $item)
+                    @forelse ($order->orderItem ?? [] as $item)
                     <tr>
                         <td>
-                            {{ $item->product->name }} x {{ $item->quantity }}
+                            {{ $item->product->name ?? 'Product' }} x {{ $item->quantity }}
                         </td>
 
                         <td align="right">
                             ${{ $item->price }}
                         </td>
                     </tr>
-                    @endforeach
-
+                    @empty
                     <tr>
-                    <td>
-                        Kirby T-Shirt
-                    </td>
-                    <td>
-                        $29.90
-                    </td>
+                        <td colspan="2">No order items found.</td>
                     </tr>
+                    @endforelse
                 </tbody>
                 </table>
+
                 <table class="checkout-totals">
                 <tbody>
                     <tr>

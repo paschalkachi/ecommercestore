@@ -9,214 +9,171 @@
     <div class="mb-md-1 pb-md-3"></div>
     <section class="product-single container pt-4 pt-xl-5">
       <div class="row" style="margin-top: 50px;">
-        <div class="col-lg-7">
-          <div class="product-single__media" data-media-type="vertical-thumbnail">
-            <div class="product-single__image">
-              <div class="swiper-container">
-                <div class="swiper-wrapper">             
-
-                  {{-- Main Image display --}}
-                  <div class="swiper-slide product-single__image-item">
-                    <img loading="lazy" class="h-auto" src="{{ asset($product->image) }}" width="674" height="674" alt="" />
-                    <a data-fancybox="gallery" href="{{ asset($product->image) }}" data-bs-toggle="tooltip"
-                      data-bs-placement="left" title="Zoom">
-                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <use href="#icon_zoom" />
-                      </svg>
-                    </a>
-                  </div>
-
-
-                  {{-- Gallery Image Display --}}
-                 {{-- Gallery Image Display --}}
-                @foreach(json_decode($product->images, true) as $gallery)
-                  <div class="swiper-slide product-single__image-item">
-                    <img loading="lazy" class="h-auto" src="{{ asset($gallery) }}" width="674" height="674" alt="" />
-                    <a data-fancybox="gallery" href="{{ asset($gallery) }}" data-bs-toggle="tooltip"
-                      data-bs-placement="left" title="Zoom">
-                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <use href="#icon_zoom" />
-                      </svg>
-                    </a>
-                  </div>
-                @endforeach
-              </div>
-                <div class="swiper-button-prev"><svg width="7" height="11" viewBox="0 0 7 11"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <use href="#icon_prev_sm" />
-                  </svg></div>
-                <div class="swiper-button-next"><svg width="7" height="11" viewBox="0 0 7 11"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <use href="#icon_next_sm" />
-                  </svg></div>              
+  <!-- Product Images Column -->
+  <div class="col-lg-7">
+    <div class="product-single__media" data-media-type="vertical-thumbnail">
+      <!-- Main Image Display -->
+      <div class="product-single__image">
+        <div class="swiper-container">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide product-single__image-item">
+              <img loading="lazy" class="h-auto" src="{{ asset($product->image) }}" width="674" height="674" alt="" />
+              <a data-fancybox="gallery" href="{{ asset($product->image) }}" data-bs-toggle="tooltip" data-bs-placement="left" title="Zoom">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <use href="#icon_zoom" />
+                </svg>
+              </a>
             </div>
+            @foreach(json_decode($product->images, true) as $gallery)
+            <div class="swiper-slide product-single__image-item">
+              <img loading="lazy" class="h-auto" src="{{ asset($gallery) }}" width="674" height="674" alt="" />
+              <a data-fancybox="gallery" href="{{ asset($gallery) }}" data-bs-toggle="tooltip" data-bs-placement="left" title="Zoom">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <use href="#icon_zoom" />
+                </svg>
+              </a>
+            </div>
+            @endforeach
           </div>
-
-             <div class="product-single__thumbnail">
-                    <div class="swiper-container">
-                      <div class="swiper-wrapper">
-                        <div class="swiper-slide product-single__image-item"><img loading="lazy" class="h-auto"
-                            src="{{ asset($product->image) }}" width="104" height="104" alt="" /></div>                      
-                        @foreach(json_decode($product->images, true) as $gallery)
-                          <div class="swiper-slide product-single__image-item"><img loading="lazy" class="h-auto"
-                            src="{{ asset($gallery) }}" width="104" height="104" alt="" /></div>
-                          @endforeach
-                      </div>
-                    </div>
-            </div>
-            
+          <div class="swiper-button-prev">
+            <svg width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg">
+              <use href="#icon_prev_sm" />
+            </svg>
           </div>
-        
-        </div>
-
-        <div class="col-lg-5">
-          <div class="d-flex justify-content-between mb-4 pb-md-2">
-            <div class="breadcrumb mb-0 d-none d-md-block flex-grow-1">
-              <a href="#" class="menu-link menu-link_us-s text-uppercase fw-medium">Home</a>
-              <span class="breadcrumb-separator menu-link fw-medium ps-1 pe-1">/</span>
-              <a href="#" class="menu-link menu-link_us-s text-uppercase fw-medium">The Shop</a>
-            </div><!-- /.breadcrumb -->
-
-            <div class="product-single__prev-next d-flex align-items-center justify-content-between justify-content-md-end flex-grow-1">
-              <a href="#" class="text-uppercase fw-medium"><svg width="10" height="10" viewBox="0 0 25 25"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <use href="#icon_prev_md" />
-                </svg><span class="menu-link menu-link_us-s">Prev</span></a>
-              <a href="#" class="text-uppercase fw-medium"><span class="menu-link menu-link_us-s">Next</span><svg
-                  width="10" height="10" viewBox="0 0 25 25" xmlns="http://www.w3.org/2000/svg">
-                  <use href="#icon_next_md" />
-                </svg></a>
-            </div><!-- /.shop-acs -->
-          </div>  
-                       
-            <h1 class="product-single__name">{{ $product->name }}</h1>
-            <div class="product-single__rating">
-              <div class="reviews-group d-flex">
-                <svg class="review-star" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg">
-                  <use href="#icon_star" />
-                </svg>
-                <svg class="review-star" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg">
-                  <use href="#icon_star" />
-                </svg>
-                <svg class="review-star" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg">
-                  <use href="#icon_star" />
-                </svg>
-                <svg class="review-star" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg">
-                  <use href="#icon_star" />
-                </svg>
-                <svg class="review-star" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg">
-                  <use href="#icon_star" />
-                </svg>
-              </div>
-              <span class="reviews-note text-lowercase text-secondary ms-1">8k+ reviews</span>
-            </div>
-            <div class="product-single__price">
-              <span class="current-price">
-                @if($product->sale_price)
-                  <s>${{ $product->regular_price }}</s> ${{ $product->sale_price }}
-                @else
-                  ${{ $product->regular_price }}
-                  @endif
-              </span>
-            </div>
-            <div class="product-single__short-desc">
-              <p>{{ $product->short_description }}</p>
-            </div>
-            @if(Cart::Instance('cart')->content()->where('id',$product->id)->count()>0)
-              <a href="{{ route("cart.index") }}" class="btn btn-warning mb-3">Go to Cart</a>
-            @else 
-            <form name="addtocart-form" method="post" action="{{ route('cart.add') }}">
-              @csrf
-                <input type="hidden" name="id" value="{{ $product->id }}">
-                <input type="hidden" name="name" value="{{ $product->name }}">
-                <input type="hidden" name="price" value="{{ $product->sale_price =='' ? $product->regular_price : $product->sale_price }}">
-                <input type="number" name="quantity" value="1" min="1">
-                <button type="submit" class="btn btn-primary btn-addtocart" data-aside="cartDrawer">Add to Cart</button>
-              </div>
-            </form>
-            @endif
-       
-            
-            {{-- add to/remove from Wishlist --}}          
-          <div class="product-single__addtolinks">
-            @php
-                $wishlistItem = Cart::instance('wishlist')->content()->where('id', $product->id)->first();
-            @endphp
-            @if($wishlistItem)
-             <form action="{{ route('wishlist.item.remove', $wishlistItem->rowId) }}" method="POST" id="frm-remove-item-{{ $product->id }}">
-                @csrf
-                @method('DELETE')
-                <a href="javascript:void(0)" class="menu-link menu-link_us-s add-to-wishlist filled-heart" onclick="document.getElementById('frm-remove-item-{{ $product->id }}').submit();">
-                  <svg class="filled-heart" width="16" height="16" viewBox="0 0 20 20"
-                    fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <use href="#icon_heart" />
-                  </svg><span class="filled-heart">Remove from Wishlist</span>
-                </a>
-              </form>
-              @else
-                <form id="wishlist-form" method="POST" action="{{ route('wishlist.add') }}">
-                @csrf
-                  <input type="hidden" name="id" value="{{ $product->id }}">
-                  <input type="hidden" name="name" value="{{ $product->name }}">
-                  <input type="hidden" name="price" value="{{ $product->sale_price =='' ? $product->regular_price : $product->sale_price }}">
-                  <input type="number" name="quantity" value="1" min="1">
-                  <a href="javascript:void(0)" class="menu-link menu-link_us-s add-to-wishlist" onclick="document.getElementById('wishlist-form').submit()"><svg width="16" height="16" viewBox="0 0 20 20"
-                    fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <use href="#icon_heart" />
-                  </svg><span>Add to Wishlist</span></a>
-                </form>
-              @endif
-
-            <share-button class="share-button">
-              <button class="menu-link menu-link_us-s to-share border-0 bg-transparent d-flex align-items-center">
-                <svg width="16" height="19" viewBox="0 0 16 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <use href="#icon_sharing" />
-                </svg>
-                <span>Share</span>
-              </button>
-              <details id="Details-share-template__main" class="m-1 xl:m-1.5" hidden="">
-                <summary class="btn-solid m-1 xl:m-1.5 pt-3.5 pb-3 px-5">+</summary>
-                <div id="Article-share-template__main"
-                  class="share-button__fallback flex items-center absolute top-full left-0 w-full px-2 py-4 bg-container shadow-theme border-t z-10">
-                  <div class="field grow mr-4">
-                    <label class="field__label sr-only" for="url">Link</label>
-                    <input type="text" class="field__input w-full" id="url"
-                      value="https://uomo-crystal.myshopify.com/blogs/news/go-to-wellness-tips-for-mental-health"
-                      placeholder="Link" onclick="this.select();" readonly="">
-                  </div>
-                  <button class="share-button__copy no-js-hidden">
-                    <svg class="icon icon-clipboard inline-block mr-1" width="11" height="13" fill="none"
-                      xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" viewBox="0 0 11 13">
-                      <path fill-rule="evenodd" clip-rule="evenodd"
-                        d="M2 1a1 1 0 011-1h7a1 1 0 011 1v9a1 1 0 01-1 1V1H2zM1 2a1 1 0 00-1 1v9a1 1 0 001 1h7a1 1 0 001-1V3a1 1 0 00-1-1H1zm0 10V3h7v9H1z"
-                        fill="currentColor"></path>
-                    </svg>
-                    <span class="sr-only">Copy link</span>
-                  </button>
-                </div>
-              </details>
-            </share-button>
-            <script src="js/details-disclosure.html" defer="defer"></script>
-            <script src="js/share.html" defer="defer"></script>
+          <div class="swiper-button-next">
+            <svg width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg">
+              <use href="#icon_next_sm" />
+            </svg>
           </div>
-
-          <div class="product-single__meta-info">
-            <div class="meta-item">
-              <label>SKU:</label>
-              <span>{{ $product->SKU }}</span>
-            </div>
-            <div class="meta-item">
-              <label>Categories:</label>
-              <span>{{ $product->category->name }}</span>
-            </div>
-            <div class="meta-item">
-              <label>Tags:</label>
-              <span>N/A</span>
-            </div>
-          </div>
-         
         </div>
       </div>
+
+      <!-- Thumbnail Images -->
+      <div class="product-single__thumbnail">
+        <div class="swiper-container">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide product-single__image-item">
+              <img loading="lazy" class="h-auto" src="{{ asset($product->image) }}" width="104" height="104" alt="" />
+            </div>
+            @foreach(json_decode($product->images, true) as $gallery)
+            <div class="swiper-slide product-single__image-item">
+              <img loading="lazy" class="h-auto" src="{{ asset($gallery) }}" width="104" height="104" alt="" />
+            </div>
+            @endforeach
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Info Column -->
+  <div class="col-lg-5">
+    <div class="d-flex justify-content-between mb-4 pb-md-2">
+      <!-- Breadcrumb -->
+      <div class="breadcrumb mb-0 d-none d-md-block flex-grow-1">
+        <a href="#" class="menu-link menu-link_us-s text-uppercase fw-medium">Home</a>
+        <span class="breadcrumb-separator menu-link fw-medium ps-1 pe-1">/</span>
+        <a href="#" class="menu-link menu-link_us-s text-uppercase fw-medium">The Shop</a>
+      </div>
+      <!-- Prev/Next -->
+      <div class="product-single__prev-next d-flex align-items-center justify-content-between justify-content-md-end flex-grow-1">
+        <a href="#" class="text-uppercase fw-medium">
+          <svg width="10" height="10" viewBox="0 0 25 25" xmlns="http://www.w3.org/2000/svg">
+            <use href="#icon_prev_md" />
+          </svg>
+          <span class="menu-link menu-link_us-s">Prev</span>
+        </a>
+        <a href="#" class="text-uppercase fw-medium">
+          <span class="menu-link menu-link_us-s">Next</span>
+          <svg width="10" height="10" viewBox="0 0 25 25" xmlns="http://www.w3.org/2000/svg">
+            <use href="#icon_next_md" />
+          </svg>
+        </a>
+      </div>
+    </div>
+
+    <h1 class="product-single__name">{{ $product->name }}</h1>
+
+    <!-- Rating -->
+    <div class="product-single__rating">
+      <div class="reviews-group d-flex">
+        @for ($i = 0; $i < 5; $i++)
+        <svg class="review-star" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg">
+          <use href="#icon_star" />
+        </svg>
+        @endfor
+      </div>
+      <span class="reviews-note text-lowercase text-secondary ms-1">8k+ reviews</span>
+    </div>
+
+    <!-- Price -->
+    <div class="product-single__price">
+      <span class="current-price">
+        @if($product->sale_price)
+          <s>${{ $product->regular_price }}</s> ${{ $product->sale_price }}
+        @else
+          ${{ $product->regular_price }}
+        @endif
+      </span>
+    </div>
+
+    <!-- Short Description -->
+    <div class="product-single__short-desc">
+      <p>{{ $product->short_description }}</p>
+    </div>
+
+    <!-- Add to Cart -->
+    @if(Cart::Instance('cart')->content()->where('id',$product->id)->count() > 0)
+      <a href="{{ route('cart.index') }}" class="btn btn-warning mb-3">Go to Cart</a>
+    @else
+      <form name="addtocart-form" method="post" action="{{ route('cart.add') }}">
+        @csrf
+        <input type="hidden" name="id" value="{{ $product->id }}">
+        <input type="hidden" name="name" value="{{ $product->name }}">
+        <input type="hidden" name="price" value="{{ $product->sale_price == '' ? $product->regular_price : $product->sale_price }}">
+        <div class="product-single__addtocart">
+          <input type="number" name="quantity" value="1" min="1" class="form-control mb-2" style="width: 80px;">
+          <button type="submit" class="btn btn-primary btn-addtocart" data-aside="cartDrawer">Add to Cart</button>
+        </div>
+      </form>
+    @endif
+
+    <!-- Wishlist -->
+    <div class="product-single__addtolinks">
+      @php
+          $wishlistItem = Cart::instance('wishlist')->content()->where('id', $product->id)->first();
+      @endphp
+      @if($wishlistItem)
+        <form action="{{ route('wishlist.item.remove', $wishlistItem->rowId) }}" method="POST" id="frm-remove-item-{{ $product->id }}">
+          @csrf
+          @method('DELETE')
+          <a href="javascript:void(0)" class="menu-link add-to-wishlist filled-heart" onclick="document.getElementById('frm-remove-item-{{ $product->id }}').submit();">
+            <svg class="filled-heart" width="16" height="16"><use href="#icon_heart" /></svg> Remove from Wishlist
+          </a>
+        </form>
+      @else
+        <form id="wishlist-form" method="POST" action="{{ route('wishlist.add') }}">
+          @csrf
+          <input type="hidden" name="id" value="{{ $product->id }}">
+          <input type="hidden" name="name" value="{{ $product->name }}">
+          <input type="hidden" name="price" value="{{ $product->sale_price == '' ? $product->regular_price : $product->sale_price }}">
+          <a href="javascript:void(0)" class="menu-link add-to-wishlist" onclick="document.getElementById('wishlist-form').submit();">
+            <svg width="16" height="16"><use href="#icon_heart" /></svg> Add to Wishlist
+          </a>
+        </form>
+      @endif
+    </div>
+
+    <!-- Meta Info -->
+    <div class="product-single__meta-info">
+      <div class="meta-item"><label>SKU:</label> <span>{{ $product->SKU }}</span></div>
+      <div class="meta-item"><label>Categories:</label> <span>{{ $product->category->name }}</span></div>
+      <div class="meta-item"><label>Tags:</label> <span>N/A</span></div>
+    </div>
+  </div>
+</div>
+
+     
      
     
         

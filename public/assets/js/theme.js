@@ -190,7 +190,7 @@ function pureFadeOut(e) {
         resetButton: '.search-popup__reset',
         searchCategorySelector: '.js-search-select',
         resultContainer: '.search-result',
-        ajaxURL: './search.html'
+        ajaxURL: '/search'
       }
 
       this.searchInputFocusedClass = 'search-field__focused';
@@ -254,10 +254,10 @@ function pureFadeOut(e) {
           el.addEventListener('click', function(e) {
             const $parentDiv = e.target.closest(_this.selectors.container);
             const $inputBox = $parentDiv.querySelector(_this.selectors.inputBox);
-            const $rc = $parentDiv.querySelector(_this.selectors.resultContainer);
+            const $rc = $parentDiv ? ($parentDiv.querySelector(_this.selectors.resultContainer) || $parentDiv.querySelector('.search-popup__results') || $parentDiv.querySelector('#box-content-search')) : null;
 
-            $inputBox.value = '';
-            $rc.innerHtml = '';
+            if ($inputBox) { $inputBox.value = ''; }
+            if ($rc) { $rc.innerHTML = ''; }
             _this._removeFormActiveClass(e.target);
           });
         })
@@ -291,9 +291,11 @@ function pureFadeOut(e) {
       _handleAjaxSearch: UomoHelpers.debounce((event, _this) => {
         const $form = event.target.closest(_this.selectors.container);
         const method = $form ? $form.method : 'GET';
-        const url = _this.selectors.ajaxURL;
+        const baseUrl = _this.selectors.ajaxURL;
+        const query = encodeURIComponent(event.target.value || '');
+        const url = baseUrl ? (baseUrl + (baseUrl.indexOf('?') === -1 ? '?' : '&') + 'search-keyword=' + query) : null;
 
-        url && fetch(url, { method: method }).then(function (response) {
+        url && fetch(url, { method: method, headers: { 'X-Requested-With': 'XMLHttpRequest' } }).then(function (response) {
           if (response.ok) {
             return response.text();
           } else {
@@ -310,7 +312,20 @@ function pureFadeOut(e) {
         const $ajaxDom = new DOMParser().parseFromString(data, 'text/html');
         // Get filtered result dom
         const $f_r = $ajaxDom.querySelector('.search-result');
-        $form.querySelector(this.selectors.resultContainer).innerHTML = $f_r.innerHTML;
+
+        if (!$form) {
+          return;
+        }
+
+        const $resultEl = $form.querySelector(this.selectors.resultContainer) || $form.querySelector('.search-popup__results') || $form.querySelector('#box-content-search');
+
+        if (!$resultEl) {
+          return; // nothing to update inside this form
+        }
+
+        // If the AJAX response contains a .search-result wrapper, use its innerHTML,
+        // otherwise dump the raw response into the container.
+        $resultEl.innerHTML = $f_r ? $f_r.innerHTML : data;
         $form.classList.add(this.searchInputFocusedClass);
       },
 
@@ -1339,9 +1354,18 @@ function pureFadeOut(e) {
     window.location.href='./shop_order_complete.html';
   });
 
-  document.querySelector('.js-show-register').addEventListener('click', function(e) {
-    document.querySelector(this.getAttribute("href")).click();
-  });
+  var registerLink = document.querySelector('.js-show-register');
+  if (registerLink) {
+    registerLink.addEventListener('click', function(e) {
+      var targetSelector = this.getAttribute("href");
+      if (targetSelector) {
+        var target = document.querySelector(targetSelector);
+        if (target) {
+          target.click();
+        }
+      }
+    });
+  }
 
   $('button.js-add-wishlist, a.add-to-wishlist').off('click').on('click', function() {
     if($(this).hasClass("active"))
