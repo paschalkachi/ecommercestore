@@ -5,7 +5,9 @@ RUN apt-get update && apt-get install -y \
     git zip unzip libpng-dev libonig-dev libxml2-dev
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
+RUN apt-get update && apt-get install -y libpq-dev \
+    && docker-php-ext-install pdo pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd
+
 
 # Enable Apache rewrite
 RUN a2enmod rewrite

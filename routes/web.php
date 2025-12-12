@@ -12,8 +12,18 @@ use App\Http\Controllers\PaymentController as ControllersPaymentController;
 use App\Http\Controllers\SearchController;
 use App\Http\Middleware\AuthAdmin;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Surfsidemedia\Shoppingcart\Facades\Cart;
+
+Route::get('/db-test', function () {
+    try {
+        DB::connection()->getPdo();
+        return "DB Connection: SUCCESS";
+    } catch (\Exception $e) {
+        return "DB ERROR: " . $e->getMessage();
+    }
+});
 
 Route::get('/dashboard', function () {
     return view('index');
