@@ -1,4 +1,3 @@
-# Use the official PHP image with Apache
 FROM php:8.2-apache
 
 # Install system dependencies
@@ -8,35 +7,33 @@ RUN apt-get update && apt-get install -y \
 # Install PHP extensions
 RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
 
-# Enable Apache mod_rewrite
+# Enable Apache rewrite
 RUN a2enmod rewrite
 
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy project files
+# Copy project
 COPY . .
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Install dependencies
-RUN composer install --no-dev --optimize-autoloader
+# Install PHP dependencies (vendor)
+RUN composer install --no-dev --optimize-autoloader --prefer-dist
 
-# Set permissions
+# Fix Apache DocumentRoot to public/
+ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
+
+RUN sed -i "s|/var/www/html|/var/www/html/public|g" /etc/apache2/sites-available/000-default.conf
+RUN sed -i "s|/var/www/html|/var/www/html/public|g" /etc/apache2/apache2.conf
+
+# Permissions
 RUN chown -R www-data:www-data storage bootstrap/cache
 
-# Set Apache document root to Laravel public folder
-ENV APACHE_DOCUMENT_ROOT /var/www/html/public
-RUN sed -ri -e 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/*.conf
+# DO NOT run artisan cache commands here
+# They need .env (which Render provides only at runtime)
 
-# Cache Laravel configs, routes, views
-RUN php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache
-
-# Expose port 80
 EXPOSE 80
 
-# Start Apache in the foreground
 CMD ["apache2-foreground"]
