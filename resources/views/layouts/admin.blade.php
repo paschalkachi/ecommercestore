@@ -347,8 +347,25 @@
                        
 
                         <div class="bottom-page">
-                            <div class="body-text">Copyright © 2024 SurfsideMedia</div>
+                            <div class="body-text">
+                                Built by 
+                                <a href="https://github.com/paschalkachi" target="_blank" class="text-dark hover:text-blue-300">
+                                Paschal Kachi
+                                </a> 
+                                &copy; <span id="year"></span>
+                            </div>
                         </div>
+                        {{-- <div class="container d-md-flex align-items-center">
+                            <span class="footer-copyright me-auto">
+                            <p class="text-sm">
+                                Built by 
+                                <a href="https://github.com/paschalkachi" target="_blank" class="text-dark hover:text-blue-300">
+                                Paschal Kachi
+                                </a> 
+                                &copy; <span id="year"></span>
+                            </p>
+                            </span>
+                        </div> --}}
                     </div>
 
                 </div>
@@ -406,6 +423,8 @@ $(function() {
         }
     });
 });
+
+document.getElementById('year').textContent = new Date().getFullYear();
 </script>
      @stack('scripts')
 </body>

@@ -5,6 +5,7 @@
       color: orange;
     }
   </style>
+
     <main class="pt-90">
     <section class="shop-main container d-flex pt-4 pt-xl-5">
       <div class="shop-sidebar side-sticky bg-body" id="shopFilter" style="margin-top: 50px">
@@ -383,6 +384,7 @@
                       @endif
                   </span>
                 </div>
+
                 <div class="product-card__review d-flex align-items-center">
                   <div class="reviews-group d-flex">
                     <svg class="review-star" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg">

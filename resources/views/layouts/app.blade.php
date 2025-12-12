@@ -273,6 +273,8 @@
       margin-top: 9px;
     }
   </style>
+
+  {{-- Navigation For Mobile View --}}
   <div class="header-mobile header_sticky">
     <div class="container d-flex align-items-center h-100">
       <a class="mobile-nav-activator d-block position-relative" href="#">
@@ -283,18 +285,25 @@
       </a>
 
       <div class="logo">
-        <a href="index.html">
-          <img src="assets/images/logo.png" alt="Uomo" class="logo__image d-block" />
-        </a>
+        <a href="{{ route('home.index') }}" class="d-flex align-items-center gap-0">
+            <img src="{{ asset('assets/images/logo4.png') }}" alt="Uomo" class="logo__image d-block" /> 
+            <h2 class="logo_text">DRESSMART</h2>
+          </a>
       </div>
 
-      <a href="#" class="header-tools__item header-tools__cart js-open-aside" data-aside="cartDrawer">
-        <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <use href="#icon_cart" />
-        </svg>
-        <span class="cart-amount d-block position-absolute js-cart-items-count">3</span>
+      <a href="{{ route('cart.index') }}" class="header-tools__item header-tools__cart">
+          <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <use href="#icon_cart" />
+          </svg>
+          @if(Cart::instance('cart')->content()->count()>0)
+            <span class="cart-amount d-block position-absolute js-cart-items-count">
+              {{ Cart::instance('cart')->content()->count() }}
+            </span>
+          @endif
       </a>
     </div>
+
 
     <nav
       class="header-mobile__navigation navigation d-flex flex-column w-100 position-absolute top-100 bg-body overflow-auto">
@@ -401,6 +410,7 @@
   </div>
 
 
+  {{-- Navigation for desktop --}}
   <header id="header" class="header header-fullwidth header-transparent-bg mb-30">
     <div class="container">
       <div class="header-desk header-desk_type_1">
@@ -526,6 +536,7 @@
           </form>
 
 
+          {{-- Cart Icon --}}
           <a href="{{ route('cart.index') }}" class="header-tools__item header-tools__cart">
             <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
               xmlns="http://www.w3.org/2000/svg">
@@ -658,7 +669,7 @@
           <p class="text-sm">
             Built by 
             <a href="https://github.com/paschalkachi" target="_blank" class="text-dark hover:text-blue-300">
-              Paschal
+              Paschal Kachi
             </a> 
             &copy; <span id="year"></span>
           </p>
@@ -673,7 +684,7 @@
 
 
   <footer class="footer-mobile container w-100 px-5 d-md-none bg-body" style="background-color: gray">
-    <div class="row text-center">
+    <div class="row text-center" style="align-items: center;">
       <div class="col-4">
         <a href="index.html" class="footer-mobile__link d-flex flex-column align-items-center">
           <svg class="d-block" width="18" height="18" viewBox="0 0 18 18" fill="none"
@@ -695,16 +706,20 @@
       </div>
 
       <div class="col-4">
-        <a href="index.html" class="footer-mobile__link d-flex flex-column align-items-center">
-          <div class="position-relative">
-            <svg class="d-block" width="18" height="18" viewBox="0 0 20 20" fill="none"
-              xmlns="http://www.w3.org/2000/svg">
-              <use href="#icon_heart" />
-            </svg>
-            <span class="wishlist-amount d-block position-absolute js-wishlist-count">3</span>
-          </div>
-          <span>Wishlist</span>
-        </a>
+       <form action="{{ route('wishlist.index') }}" method="GET">
+            @csrf
+            <button class="header-tools__item header-tools__cart bg-transparent border-0 flex flex-column" style="align-items: center"> 
+                <svg width="18" height="18">
+                    <use href="#icon_heart" />
+                </svg>
+                <span>Wishlist</span>
+                @if(Cart::instance('wishlist')->count() > 0)
+                <span class="cart-amount js-cart-items-count">
+                    {{ Cart::instance('wishlist')->count() }}
+                </span>
+                @endif
+            </button>
+          </form>
       </div>
     </div>
   </footer>
