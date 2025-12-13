@@ -33,7 +33,7 @@ return new class extends Migration
             $table->date('delivered_date')->nullable();
             $table->date('canceled_date')->nullable();
             $table->timestamps();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            // $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

@@ -18,9 +18,10 @@ use Illuminate\Support\Facades\Route;
 use Surfsidemedia\Shoppingcart\Facades\Cart;
 
 Route::get('/migrate', function () {
-    Artisan::call('migrate', ['--force' => true]);
-    return 'Migrations completed';
+    Artisan::call('migrate:fresh', ['--force' => true]);
+    return 'Migrations completed successfully';
 });
+
 
 Route::get('/dashboard', function () {
     return view('index');
