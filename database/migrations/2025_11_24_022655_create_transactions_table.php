@@ -12,15 +12,23 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('transactions', function (Blueprint $table) {
-            $table->id();
-            $table->bigInteger('user_id')->unsigned();
-            $table->bigInteger('order_id')->unsigned();
-            $table->enum('mode',['cod','card','paypal']);
-            $table->enum('status',['pending','approved','declined','refunded'])->default('pending');
-            $table->timestamps();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
-        });
+        $table->id();
+
+        $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+        $table->foreignId('order_id')->constrained()->cascadeOnDelete();
+
+        // Instead of ENUM
+        $table->string('method')->default('cod'); // cod, card, paypal, paystack
+        $table->string('gateway')->nullable();     // paystack, paypal, stripe, etc
+
+        $table->string('status')->default('pending'); // pending, approved, declined, refunded
+
+        $table->string('reference')->nullable();
+        $table->json('gateway_response')->nullable();
+
+        $table->timestamps();
+    });
+
     }
 
     /**
