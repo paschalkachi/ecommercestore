@@ -16,15 +16,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Surfsidemedia\Shoppingcart\Facades\Cart;
 
-Route::get('/db-test', function () {
-    try {
-        DB::connection()->getPdo();
-        return "DB Connection: SUCCESS";
-    } catch (\Exception $e) {
-        return "DB ERROR: " . $e->getMessage();
-    }
-});
-
 Route::get('/dashboard', function () {
     return view('index');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -143,7 +134,5 @@ Route::middleware(['auth', AuthAdmin::class])->group(function () {
 
 // Route::post('/paystack/webhook', [PaystackController::class, 'paystackWebhook'])
 //      ->name('paystack.webhook');
-
-
 
  });
