@@ -12,9 +12,15 @@ use App\Http\Controllers\PaymentController as ControllersPaymentController;
 use App\Http\Controllers\SearchController;
 use App\Http\Middleware\AuthAdmin;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Surfsidemedia\Shoppingcart\Facades\Cart;
+
+Route::get('/migrate', function () {
+    Artisan::call('migrate', ['--force' => true]);
+    return 'Migrations completed';
+});
 
 Route::get('/dashboard', function () {
     return view('index');
