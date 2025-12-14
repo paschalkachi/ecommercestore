@@ -12,27 +12,54 @@ use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
-    public function index() 
-    {
-        // dd(DB::connection()->getPdo());
-        $slides = Slide::where('status',1)->get()->take(3); 
+    // public function index() 
+    // {
+    //     // dd(DB::connection()->getPdo());
+    //     $slides = Slide::where('status',1)->get()->take(3); 
         
-        // To display categories on the home page
-        $categories = Category::orderBy('name')->get();
+    //     // To display categories on the home page
+    //     $categories = Category::orderBy('name')->get();
 
-        // To display on sale products on the home page
-        $sproducts = Product::whereNotNull('sale_price')->where('sale_price','<>','')->inRandomOrder()->get()->take(8); //remember to browse te meaning of this line later
+    //     // To display on sale products on the home page
+    //     $sproducts = Product::whereNotNull('sale_price')->where('sale_price','<>','')->inRandomOrder()->get()->take(8); //remember to browse te meaning of this line later
 
-        // To display featured products on the home page
-        $fproducts = Product::where('featured',1)->get()->take(8);
+    //     // To display featured products on the home page
+    //     $fproducts = Product::where('featured',1)->get()->take(8);
              
-    //      $user = Auth::user();
-    //     if ($user->utype === 'ADM') {
-    //     // Redirect admin to the dashboard route
-    //     return route('admin.index');
+    // //      $user = Auth::user();
+    // //     if ($user->utype === 'ADM') {
+    // //     // Redirect admin to the dashboard route
+    // //     return route('admin.index');
+    // // }
+    //     return view("index",compact('slides','categories','sproducts','fproducts'));
     // }
-        return view("index",compact('slides','categories','sproducts','fproducts'));
-    }
+
+
+    public function index()
+{
+    $slides = Slide::where('status', 1)
+        ->limit(3)
+        ->get();
+
+    $categories = Category::orderBy('name')->get();
+
+    $sproducts = Product::whereNotNull('sale_price')
+        ->where('sale_price', '>', 0)
+        ->inRandomOrder()
+        ->limit(8)
+        ->get();
+
+    $fproducts = Product::where('featured', 1)
+        ->limit(8)
+        ->get();
+
+    return view("index", compact(
+        'slides',
+        'categories',
+        'sproducts',
+        'fproducts'
+    ));
+}
 
     // Function to view cotact us page
     public function contact()

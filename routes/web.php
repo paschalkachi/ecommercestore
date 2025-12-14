@@ -17,11 +17,17 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Surfsidemedia\Shoppingcart\Facades\Cart;
 
-Route::get('/migrate', function () {
-    Artisan::call('migrate:fresh', ['--force' => true]);
-    return 'Migrations completed successfully';
-});
+// Route::get('/migrate', function () {
+//     Artisan::call('migrate:fresh', ['--force' => true]);
+//     return 'Migrations completed successfully';
+// });
 
+Route::get('/test-sale-products', function () {
+    return \App\Models\Product::whereNotNull('sale_price')
+        ->where('sale_price', '>', 0)
+        ->select('id', 'name', 'sale_price')
+        ->get();
+});
 
 Route::get('/dashboard', function () {
     return view('index');
