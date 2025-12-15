@@ -2,10 +2,15 @@ FROM php:8.2-apache
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
-    git zip unzip libpng-dev libonig-dev libxml2-dev curl
+    git zip unzip libpng-dev libonig-dev libxml2-dev curl \
+    libjpeg-dev libfreetype6-dev libwebp-dev libxpm-dev
 
 # Install PHP extensions
 RUN apt-get update && apt-get install -y libpq-dev \
+    && docker-php-ext-configure gd \
+        --with-freetype \
+        --with-jpeg \
+        --with-webp \
     && docker-php-ext-install pdo pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd
 
 # Enable Apache rewrite
