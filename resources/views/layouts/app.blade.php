@@ -364,13 +364,14 @@
                     </form>
                 </div>
             @else
-                <a href="{{ route("login") }}" class="header-tools__item">
-            @endauth
+                <a href="{{ route("login") }}" class="header-tools__item">            
               <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
                 xmlns="http://www.w3.org/2000/svg">
                 <use href="#icon_user" />
               </svg>
+              <span class="pl-6px">Login</span>
             </a>
+            @endauth
           </div>
 
           @else
@@ -515,12 +516,13 @@
                 </div>
             @else
                 <a href="{{ route("login") }}" class="header-tools__item">
-            @endauth
               <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
                 xmlns="http://www.w3.org/2000/svg">
                 <use href="#icon_user" />
               </svg>
+              <span class="pl-6px">Login</span>
             </a>
+            @endauth
           </div>
 
           @else
