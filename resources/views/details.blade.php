@@ -26,6 +26,7 @@
             </div>
              @php
                   $galleryImages = is_array($product->images) ? $product->images : [];
+                  $rgalleryImages = is_array($rproduct->images) ? $product->images : [];
               @endphp
 
               @foreach($galleryImages as $gallery)
@@ -428,7 +429,7 @@
                   {{-- @foreach(json_decode($rproduct->images, true) as $gallery)
                     <img loading="lazy" src="{{ asset($gallery) }}" width="330" height="400" alt="{{ $rproduct->name }}" class="pc__img pc__img-second">
                   @endforeach --}}
-                  @foreach($rproduct->images ?? [] as $gallery)
+                  @foreach($rgalleryImages as $gallery)
                           <img loading="lazy" src="{{ asset($gallery) }}" width="330" height="400" alt="{{ $rproduct->name }}" class="pc__img pc__img-second">
                   @endforeach
                 </a>     
