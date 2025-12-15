@@ -22,50 +22,50 @@ use Intervention\Image\Laravel\Facades\Image;
 
 class AdminController extends Controller
 {
-    
-   public function index()
+
+  public function index()
 {
     // Latest orders on admin dashboard
     $orders = Order::orderBy('created_at', 'DESC')
                     ->limit(10)
                     ->get();
 
-    // Dashboard summary data (PostgreSQL compatible)
+    // Dashboard summary data (PostgreSQL compatible with quoted aliases)
     $dashboardDatas = DB::select("
         SELECT
-            SUM(total) AS TotalAmount,
-            SUM(CASE WHEN status = 'ordered'   THEN total ELSE 0 END) AS TotalOrderedAmount,
-            SUM(CASE WHEN status = 'delivered' THEN total ELSE 0 END) AS TotalDeliveredAmount,
-            SUM(CASE WHEN status = 'canceled'  THEN total ELSE 0 END) AS TotalCanceledAmount,
+            SUM(total) AS \"TotalAmount\",
+            SUM(CASE WHEN status = 'ordered'   THEN total ELSE 0 END) AS \"TotalOrderedAmount\",
+            SUM(CASE WHEN status = 'delivered' THEN total ELSE 0 END) AS \"TotalDeliveredAmount\",
+            SUM(CASE WHEN status = 'canceled'  THEN total ELSE 0 END) AS \"TotalCanceledAmount\",
 
-            COUNT(*) AS Total,
-            SUM(CASE WHEN status = 'ordered'   THEN 1 ELSE 0 END) AS TotalOrdered,
-            SUM(CASE WHEN status = 'delivered' THEN 1 ELSE 0 END) AS TotalDelivered,
-            SUM(CASE WHEN status = 'canceled'  THEN 1 ELSE 0 END) AS TotalCanceled
+            COUNT(*) AS \"Total\",
+            SUM(CASE WHEN status = 'ordered'   THEN 1 ELSE 0 END) AS \"TotalOrdered\",
+            SUM(CASE WHEN status = 'delivered' THEN 1 ELSE 0 END) AS \"TotalDelivered\",
+            SUM(CASE WHEN status = 'canceled'  THEN 1 ELSE 0 END) AS \"TotalCanceled\"
         FROM orders
     ");
 
     // Monthly statistics (PostgreSQL compatible)
     $monthlyDatas = DB::select("
         SELECT 
-            m.id AS MonthNo,
-            m.name AS MonthName,
-            COALESCE(d.TotalAmount, 0) AS TotalAmount,
-            COALESCE(d.TotalOrderedAmount, 0) AS TotalOrderedAmount,
-            COALESCE(d.TotalDeliveredAmount, 0) AS TotalDeliveredAmount,
-            COALESCE(d.TotalCanceledAmount, 0) AS TotalCanceledAmount
+            m.id AS \"MonthNo\",
+            m.name AS \"MonthName\",
+            COALESCE(d.\"TotalAmount\", 0) AS \"TotalAmount\",
+            COALESCE(d.\"TotalOrderedAmount\", 0) AS \"TotalOrderedAmount\",
+            COALESCE(d.\"TotalDeliveredAmount\", 0) AS \"TotalDeliveredAmount\",
+            COALESCE(d.\"TotalCanceledAmount\", 0) AS \"TotalCanceledAmount\"
         FROM month_names m
         LEFT JOIN (
             SELECT
-                EXTRACT(MONTH FROM created_at) AS MonthNo,
-                SUM(total) AS TotalAmount,
-                SUM(CASE WHEN status = 'ordered'   THEN total ELSE 0 END) AS TotalOrderedAmount,
-                SUM(CASE WHEN status = 'delivered' THEN total ELSE 0 END) AS TotalDeliveredAmount,
-                SUM(CASE WHEN status = 'canceled'  THEN total ELSE 0 END) AS TotalCanceledAmount
+                EXTRACT(MONTH FROM created_at) AS \"MonthNo\",
+                SUM(total) AS \"TotalAmount\",
+                SUM(CASE WHEN status = 'ordered'   THEN total ELSE 0 END) AS \"TotalOrderedAmount\",
+                SUM(CASE WHEN status = 'delivered' THEN total ELSE 0 END) AS \"TotalDeliveredAmount\",
+                SUM(CASE WHEN status = 'canceled'  THEN total ELSE 0 END) AS \"TotalCanceledAmount\"
             FROM orders
             WHERE EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
             GROUP BY EXTRACT(MONTH FROM created_at)
-        ) d ON d.MonthNo = m.id
+        ) d ON d.\"MonthNo\" = m.id
         ORDER BY m.id
     ");
 
