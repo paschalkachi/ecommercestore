@@ -24,16 +24,22 @@
                 </svg>
               </a>
             </div>
-            @foreach(json_decode($product->images, true) as $gallery)
-            <div class="swiper-slide product-single__image-item">
-              <img loading="lazy" class="h-auto" src="{{ asset($gallery) }}" width="674" height="674" alt="" />
-              <a data-fancybox="gallery" href="{{ asset($gallery) }}" data-bs-toggle="tooltip" data-bs-placement="left" title="Zoom">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <use href="#icon_zoom" />
-                </svg>
-              </a>
-            </div>
+            {{-- <div class="swiper-slide"> --}}
+            @php
+                $galleryImages = is_array($product->images) ? $product->images : [];
+            @endphp
+
+            @foreach($galleryImages as $gallery)
+                <a href="{{ route('shop.product.details',['product_slug'=>$product->slug]) }}">
+                    <img loading="lazy"
+                        src="{{ asset($gallery) }}"
+                        width="330"
+                        height="400"
+                        alt="{{ $product->name }}"
+                        class="pc__img">
+                </a>
             @endforeach
+            {{-- </div> --}}
           </div>
           <div class="swiper-button-prev">
             <svg width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg">
