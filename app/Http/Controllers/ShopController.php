@@ -29,24 +29,39 @@ class ShopController extends Controller
     $brands = Brand::orderBy("name", "ASC")->get();
     $categories = Category::orderBy("name", "ASC")->get();
 
-    $products = Product::where(function($query) use($if_brands, $if_categories) {
-        if ($if_brands != '') {
-            $query->whereIn('brand_id', explode(',', $if_brands));
-        }
+    $products = Product::query();
 
-        if ($if_categories != '') {
-            $query->whereIn('category_id', explode(',', $if_categories));
-        }
-    })
-    ->where(function($query) use($min_price, $max_price) {
+    // Filter by brands if provided
+    if (!empty($if_brands)) {
+        $brandIds = explode(',', $if_brands);
+        $products->whereIn('brand_id', $brandIds);
+    }
+
+    // Filter by categories if provided
+    if (!empty($if_categories)) {
+        $categoryIds = explode(',', $if_categories);
+        $products->whereIn('category_id', $categoryIds);
+    }
+
+    // Filter by price range
+    $products->where(function($query) use ($min_price, $max_price) {
         $query->whereBetween('regular_price', [$min_price, $max_price])
-            ->orWhereBetween('sale_price', [$min_price, $max_price]);
-    })
-    ->orderBy($o_column, $o_order)
-    ->paginate($size);
+            ->orWhere(function($q) use ($min_price, $max_price) {
+                $q->whereNotNull('sale_price')
+                    ->whereBetween('sale_price', [$min_price, $max_price]);
+            });
+    });
 
-    return view("shop", compact("products","size","order","brands","if_brands","categories","if_categories","min_price","max_price"));
-}
+    // Apply ordering
+    $products = $products->orderBy($o_column, $o_order)
+                        ->paginate($size);
+
+    // Return to view
+    return view("shop", compact(
+        "products", "size", "order", "brands", "if_brands",
+        "categories", "if_categories", "min_price", "max_price"
+    ));
+    }
 
 
     public function product_details($product_slug)
