@@ -26,6 +26,11 @@ class Product extends Model
         'brand_id',
     ];
 
+    protected $casts = [
+    'images' => 'array',
+];
+
+
     // Relationships
     public function category()
     {

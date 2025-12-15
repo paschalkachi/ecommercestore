@@ -338,9 +338,19 @@
 
                     {{-- Gallery Product Images --}}
                     <div class="swiper-slide">
-                      @foreach(json_decode($product->images, true) as $gallery)         
-                        <a href="{{ route('shop.product.details',['product_slug'=>$product->slug]) }}"><img loading="lazy" src="{{ asset($gallery) }}"
-                            width="330" height="400" alt="{{ $product->name }}" class="pc__img"></a>
+                     @php
+                          $galleryImages = is_array($product->images) ? $product->images : [];
+                      @endphp
+
+                      @foreach($galleryImages as $gallery)
+                          <a href="{{ route('shop.product.details',['product_slug'=>$product->slug]) }}">
+                              <img loading="lazy"
+                                  src="{{ asset($gallery) }}"
+                                  width="330"
+                                  height="400"
+                                  alt="{{ $product->name }}"
+                                  class="pc__img">
+                          </a>
                       @endforeach
                     </div>
                   </div>
@@ -371,7 +381,7 @@
               </div>
 
               <div class="pc__info position-relative">
-                <p class="pc__category">{{ $product->category->name }}</p>
+                <p class="pc__category">{{ $product->category->name ?? 'Uncategorized' }}</p>
                 <h6 class="pc__title">
                   <a href="{{ route('shop.product.details',['product_slug'=>$product->slug]) }}">{{ $product->name }}</a>
                 </h6>
