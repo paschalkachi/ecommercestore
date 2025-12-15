@@ -320,357 +320,195 @@ class AdminController extends Controller
         return view('admin.products.add', compact('categories','brands'));
     }
 
-   // Store Product function
+public function product_store(Request $request)
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'slug' => 'required|string|max:255|unique:products,slug',
+        'category_id' => 'required|exists:categories,id',
+        'brand_id' => 'required|exists:brands,id',
+        'short_description' => 'required|string',
+        'description' => 'required|string',
+        'regular_price' => 'required|numeric',
+        'sale_price' => 'required|numeric',
+        'SKU' => 'required|string|max:50',
+        'quantity' => 'required|integer',
+        'stock_status' => 'required|string',
+        'featured' => 'required|boolean',
+        'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:4096',
+        'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:4096',
+    ]);
 
-    public function product_store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:products,slug',
-            'category_id' => 'required|exists:categories,id',
-            'brand_id' => 'required|exists:brands,id',
-            'short_description' => 'required|string',
-            'description' => 'required|string',
-            'regular_price' => 'required|numeric',
-            'sale_price' => 'required|numeric',
-            'SKU' => 'required|string|max:50',
-            'quantity' => 'required|integer',
-            'stock_status' => 'required|string',
-            'featured' => 'required|boolean',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:4096',
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:4096',
-        ]);
+    $product = new Product();
 
-        $product = new Product();
-
-        // ✅ Handle main product image
-        if ($request->hasFile('image')) {
-            $mainImage = $request->file('image');
-            $mainImageName = time() . '_' . $mainImage->getClientOriginalName();
-
-            // Move original image to uploads/products/
-            $mainImage->move(public_path('uploads/products'), $mainImageName);
-
-            // Generate thumbnails
-            $this->GenerateProductThumbnails(public_path('uploads/products/' . $mainImageName), $mainImageName);
-
-            $product->image = 'uploads/products/' . $mainImageName;
-        }
-
-        // ✅ Handle gallery images (if any)
-        $galleryPaths = [];
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $galleryImage) {
-                $galleryName = time() . '_' . $galleryImage->getClientOriginalName();
-
-                // Move to uploads/products/
-                $galleryImage->move(public_path('uploads/products'), $galleryName);
-
-                // Generate thumbnail
-                $this->GenerateProductThumbnails(public_path('uploads/products/' . $galleryName), $galleryName);
-
-                $galleryPaths[] = 'uploads/products/' . $galleryName;
-            }
-        }
-
-        // ✅ Save product details
-        $product->fill([
-            'name' => $request->name,
-            'slug' => $request->slug,
-            'category_id' => $request->category_id,
-            'brand_id' => $request->brand_id,
-            'short_description' => $request->short_description,
-            'description' => $request->description,
-            'regular_price' => $request->regular_price,
-            'sale_price' => $request->sale_price,
-            'SKU' => $request->SKU,
-            'quantity' => $request->quantity,
-            'stock_status' => $request->stock_status,
-            'featured' => $request->featured,
-            'images' => json_encode($galleryPaths),
-        ]);
-
-        $product->save();
-
-        return redirect()->route('admin.products.index')->with('success', 'Product added successfully!');
+    // Main image
+    if ($request->hasFile('image')) {
+        $mainImage = $request->file('image');
+        $mainImageName = time() . '_' . $mainImage->getClientOriginalName();
+        $mainImage->move(public_path('uploads/products'), $mainImageName);
+        $this->GenerateProductThumbnails(public_path('uploads/products/' . $mainImageName), $mainImageName);
+        $product->image = 'uploads/products/' . $mainImageName;
     }
-    // public function product_store(Request $request, $id)
-    // {
-    //     $product = Product::findOrFail($id);
-    //     // ✅ Validate inputs
-    //     $request->validate([
-    //         'name' => 'required|string|max:255',
-    //         'slug' => 'required|string|max:255|unique:products,slug',
-    //         'category_id' => 'required|exists:categories,id',
-    //         'brand_id' => 'required|exists:brands,id',
-    //         'short_description' => 'required|string',
-    //         'description' => 'required|string',
-    //         'regular_price' => 'required|numeric',
-    //         'sale_price' => 'required|numeric',
-    //         'SKU' => 'required|string|max:50',
-    //         'quantity' => 'required|integer',
-    //         'stock_status' => 'required|string',
-    //         'featured' => 'required|boolean',
-    //         'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:4096',
-    //         'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:4096'
-    //     ]);
 
-    //     // ✅ Handle main image upload
-    
-
-    //         // Upload new main image
-    //         $mainImage = $request->file('image');
-    //         $mainImageName = time() . '_' . $mainImage->getClientOriginalName();
-    //         $mainImage->move(public_path('uploads/products'), $mainImageName);
-
-    //         // Generate thumbnail
-    //         $this->GenerateProductThumbnails(public_path('uploads/products/' . $mainImageName), $mainImageName);
-
-    //         // Save path
-    //         $product->image = 'uploads/products/' . $mainImageName;
-        
-
-    //     // ✅ Handle gallery images
-    //     $galleryPaths = json_encode($product->images, true) ?? [];
-
-    
-    //         // Delete old gallery images + thumbs
-    //       if ($request->hasFile('images')) {
-    //         foreach ($request->file('images') as $galleryImage) {
-    //             $galleryName = time() . '_' . $galleryImage->getClientOriginalName();
-    //             $galleryImage->move(public_path('uploads/products'), $galleryName);
-
-    //             // Create thumbnail
-    //             $this->GenerateProductThumbnails(public_path('uploads/products/thumbnails' . $galleryName), $galleryName);
-
-    //             $galleryPaths[] = 'uploads/products/thumbnails' . $galleryName;
-    //         }
-            
-    //     }
-
-
-    //     // ✅ Store main image
-    //     // $mainImageName = null;
-    //     // if ($request->hasFile('image')) {
-    //     //     $mainImage = $request->file('image');
-    //     //     $mainImageName = time().'_'.$mainImage->getClientOriginalName();
-    //     //     $mainImage->move(public_path('uploads/products'), $mainImageName);
-    //     //     // $product->image = $mainImage->getClientOriginalName();
-    //     //     $product->image = 'uploads/products/' . $mainImageName;
-
-    //     //     // ✅ Generate thumbnail (pass file, not path)
-    //     //     $this->GenerateProductThumbnails(public_path('uploads/products/thumbnails' . $mainImageName), $mainImageName);
-
-    //     // }
-
-    //     // ✅ Store gallery images
-    //     // $galleryPaths = [];
-    //     // if ($request->hasFile('images')) {
-    //     //     foreach ($request->file('images') as $galleryImage) {
-    //     //         $galleryName = time().'_'.$galleryImage->getClientOriginalName();
-    //     //         $galleryImage->move(public_path('uploads/products'), $galleryName);
-    //     //         $galleryPaths[] = 'uploads/products/'.$galleryName;
-
-    //     //         // ✅ Generate thumbnails for gallery
-    //     //        $this->GenerateProductThumbnails(public_path('uploads/products/' . $galleryName), $galleryName);
-
-    //     //     }
-    //     // }
-
-    //     // ✅ Save product to database
-    //     $product = new Product();
-    //     $product->name = $request->name;
-    //     $product->slug = $request->slug;
-    //     $product->category_id = $request->category_id;
-    //     $product->brand_id = $request->brand_id;
-    //     $product->short_description = $request->short_description;
-    //     $product->description = $request->description;
-    //     $product->regular_price = $request->regular_price;
-    //     $product->sale_price = $request->sale_price;
-    //     $product->SKU = $request->SKU;
-    //     $product->quantity = $request->quantity;
-    //     $product->stock_status = $request->stock_status;
-    //     $product->featured = $request->featured;
-    //     $product->image = $mainImageName ? 'uploads/products/'.$mainImageName : null;
-    //     $product->images = json_encode($galleryPaths);
-    //     $product->save();
-
-    //     // ✅ Redirect with success
-    //     return redirect()->route('admin.products.index')->with('success', 'Product added successfully!');
-    // }
-
-
-    public function GenerateProductThumbnails($imageInput, $imageName)
-    {
-        $destinationPath = public_path('uploads/products');
-        $destinationPathThumbnail = public_path('uploads/products/thumbnails');
-
-        // Ensure folders exist
-        if (!File::exists($destinationPath)) {
-            File::makeDirectory($destinationPath, 0755, true);
+    // Gallery images
+    $galleryPaths = [];
+    if ($request->hasFile('images')) {
+        foreach ($request->file('images') as $galleryImage) {
+            $galleryName = time() . '_' . $galleryImage->getClientOriginalName();
+            $galleryImage->move(public_path('uploads/products'), $galleryName);
+            $this->GenerateProductThumbnails(public_path('uploads/products/' . $galleryName), $galleryName);
+            $galleryPaths[] = 'uploads/products/' . $galleryName;
         }
-        if (!File::exists($destinationPathThumbnail)) {
-            File::makeDirectory($destinationPathThumbnail, 0755, true);
-        }
+    }
 
-        // Create Image Manager
-        $manager = new ImageManager(new Driver());
+    $product->fill([
+        'name' => $request->name,
+        'slug' => $request->slug,
+        'category_id' => $request->category_id,
+        'brand_id' => $request->brand_id,
+        'short_description' => $request->short_description,
+        'description' => $request->description,
+        'regular_price' => $request->regular_price,
+        'sale_price' => $request->sale_price,
+        'SKU' => $request->SKU,
+        'quantity' => $request->quantity,
+        'stock_status' => $request->stock_status,
+        'featured' => $request->featured,
+        'images' => json_encode($galleryPaths),
+    ]);
 
-        // Handle both UploadedFile and string path
-        if ($imageInput instanceof \Illuminate\Http\UploadedFile) {
-            $img = $manager->read($imageInput->getRealPath());
-        } else {
-            $img = $manager->read($imageInput);
-        }
+    $product->save();
 
-        // Save resized full image (main product image)
-        $img->cover(540, 689, 'top')
-            ->save($destinationPath . '/' . $imageName);
+    return redirect()->route('admin.products.index')->with('success', 'Product added successfully!');
+}
 
-        // Save thumbnail (small version)
-        $thumbnailPath = $destinationPathThumbnail . '/' . $imageName;
+// Generate Product Thumbnails
+public function GenerateProductThumbnails($imagePath, $imageName)
+{
+    $mainPath = public_path('uploads/products');
+    $thumbPath = public_path('uploads/products/thumbnails');
+
+    if (!File::exists($mainPath)) File::makeDirectory($mainPath, 0755, true);
+    if (!File::exists($thumbPath)) File::makeDirectory($thumbPath, 0755, true);
+
+    $manager = new ImageManager(new Driver());
+    $img = $manager->read($imagePath);
+
+    // Resize main image
+    $img->cover(540, 689, 'top')->save($mainPath . '/' . $imageName);
+
+    // Resize thumbnail
     $img->resize(300, 300, function ($constraint) {
         $constraint->aspectRatio();
-    })->save($thumbnailPath, 90); // quality 90%
+    })->save($thumbPath . '/' . $imageName, 90);
+}
 
+// Edit Product
+public function product_edit($id)
+{
+    $product = Product::findOrFail($id);
+    $categories = Category::select('id','name')->orderBy('name')->get();
+    $brands = Brand::select('id','name')->orderBy('name')->get();
+    return view('admin.products.edit', compact('product','categories','brands'));
+}
+
+// Update Product
+public function product_update(Request $request, $id)
+{
+    $product = Product::findOrFail($id);
+
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'slug' => 'required|string|max:255|unique:products,slug,' . $product->id,
+        'category_id' => 'required|exists:categories,id',
+        'brand_id' => 'required|exists:brands,id',
+        'short_description' => 'required|string',
+        'description' => 'required|string',
+        'regular_price' => 'required|numeric',
+        'sale_price' => 'required|numeric',
+        'SKU' => 'required|string|max:50',
+        'quantity' => 'required|integer',
+        'stock_status' => 'required|string',
+        'featured' => 'required|boolean',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:4096',
+        'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:4096'
+    ]);
+
+    // Main image
+    if ($request->hasFile('image')) {
+        if ($product->image && file_exists(public_path($product->image))) unlink(public_path($product->image));
+        $oldThumb = public_path('uploads/products/thumbnails/' . basename($product->image));
+        if (file_exists($oldThumb)) unlink($oldThumb);
+
+        $mainImage = $request->file('image');
+        $mainImageName = time() . '_' . $mainImage->getClientOriginalName();
+        $mainImage->move(public_path('uploads/products'), $mainImageName);
+        $this->GenerateProductThumbnails(public_path('uploads/products/' . $mainImageName), $mainImageName);
+        $product->image = 'uploads/products/' . $mainImageName;
     }
 
-    // product edit function
-        public function product_edit($id)
-        {
-            $product =Product::findOrFail($id);
-            $categories = Category::select('id','name')->orderBy('name')->get();
-            $brands = Brand::select('id','name')->orderBy('name')->get();
-            return view('admin.products.edit', compact('product','categories','brands'));
+    // Gallery images
+    if ($request->hasFile('images')) {
+        $oldGallery = json_decode($product->images, true) ?? [];
+        foreach ($oldGallery as $oldPath) {
+            if (file_exists(public_path($oldPath))) unlink(public_path($oldPath));
+            $oldThumb = public_path('uploads/products/thumbnails/' . basename($oldPath));
+            if (file_exists($oldThumb)) unlink($oldThumb);
         }
 
-    // Update product function
-    public function product_update(Request $request, $id)
-    {
-        $product = Product::findOrFail($id);
-
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:products,slug,' . $product->id,
-            'category_id' => 'required|exists:categories,id',
-            'brand_id' => 'required|exists:brands,id',
-            'short_description' => 'required|string',
-            'description' => 'required|string',
-            'regular_price' => 'required|numeric',
-            'sale_price' => 'required|numeric',
-            'SKU' => 'required|string|max:50',
-            'quantity' => 'required|integer',
-            'stock_status' => 'required|string',
-            'featured' => 'required|boolean',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:4096',
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:4096'
-        ]);
-
-        // ✅ Handle main image upload
-        if ($request->hasFile('image')) {
-            // Delete old files
-            if ($product->image && file_exists(public_path($product->image))) {
-                unlink(public_path($product->image));
-            }
-            $oldThumb = public_path('uploads/products/thumbnails/' . basename($product->image));
-            if (file_exists($oldThumb)) {
-                unlink($oldThumb);
-            }
-
-            // Upload new main image
-            $mainImage = $request->file('image');
-            $mainImageName = time() . '_' . $mainImage->getClientOriginalName();
-            $mainImage->move(public_path('uploads/products'), $mainImageName);
-
-            // Generate thumbnail
-            $this->GenerateProductThumbnails(public_path('uploads/products/' . $mainImageName), $mainImageName);
-
-            // Save path
-            $product->image = 'uploads/products/' . $mainImageName;
+        $galleryPaths = [];
+        foreach ($request->file('images') as $galleryImage) {
+            $galleryName = time() . '_' . $galleryImage->getClientOriginalName();
+            $galleryImage->move(public_path('uploads/products'), $galleryName);
+            $this->GenerateProductThumbnails(public_path('uploads/products/' . $galleryName), $galleryName);
+            $galleryPaths[] = 'uploads/products/' . $galleryName;
         }
-
-        // ✅ Handle gallery images
-        $galleryPaths = json_decode($product->images, true) ?? [];
-
-        if ($request->hasFile('images')) {
-            // Delete old gallery images + thumbs
-            foreach ($galleryPaths as $oldPath) {
-                if (file_exists(public_path($oldPath))) {
-                    unlink(public_path($oldPath));
-                }
-                $oldThumb = public_path('uploads/products/' . basename($oldPath));
-                if (file_exists($oldThumb)) {
-                    unlink($oldThumb);
-                }
-            }
-
-            $galleryPaths = []; // reset to new list
-            foreach ($request->file('images') as $galleryImage) {
-                $galleryName = time() . '_' . $galleryImage->getClientOriginalName();
-                $galleryImage->move(public_path('uploads/products'), $galleryName);
-
-                // Create thumbnail
-                $this->GenerateProductThumbnails(public_path('uploads/products/thumbnails' . $galleryName), $galleryName);
-
-                $galleryPaths[] = 'uploads/products/thumbnails' . $galleryName;
-            }
-        }
-
-        // ✅ Update text fields
-        $product->fill([
-            'name' => $request->name,
-            'slug' => $request->slug,
-            'category_id' => $request->category_id,
-            'brand_id' => $request->brand_id,
-            'short_description' => $request->short_description,
-            'description' => $request->description,
-            'regular_price' => $request->regular_price,
-            'sale_price' => $request->sale_price,
-            'SKU' => $request->SKU,
-            'quantity' => $request->quantity,
-            'stock_status' => $request->stock_status,
-            'featured' => $request->featured,
-        ]);
-
-        // ✅ Only update gallery if new ones exist
-        if ($request->hasFile('images')) {
-            $product->images = json_encode($galleryPaths);
-        }
-
-        $product->save();
-
-        return redirect()->route('admin.products.index')->with('success', 'Product updated successfully!');
+        $product->images = json_encode($galleryPaths);
     }
 
-    // Delete Products function
-    public function product_delete($id)
-    {
-        $product = Product::findorFail($id);
-        if(File::exists(public_path('uploads/products').'/'. $product->image))
-        {
-            File::delete(public_path('uploads/products'. $product->image));
-        }
+    // Update text fields
+    $product->fill([
+        'name' => $request->name,
+        'slug' => $request->slug,
+        'category_id' => $request->category_id,
+        'brand_id' => $request->brand_id,
+        'short_description' => $request->short_description,
+        'description' => $request->description,
+        'regular_price' => $request->regular_price,
+        'sale_price' => $request->sale_price,
+        'SKU' => $request->SKU,
+        'quantity' => $request->quantity,
+        'stock_status' => $request->stock_status,
+        'featured' => $request->featured,
+    ]);
 
-        if(File::exists(public_path('uploads/products/thumbnails').'/'. $product->image))
-        {
-            File::delete(public_path('uploads/products/thumbnails'. $product->image));
-        }
+    $product->save();
 
+    return redirect()->route('admin.products.index')->with('success', 'Product updated successfully!');
+}
 
-            // Delete old gallery images + thumbs
-            $galleryPaths = json_decode($product->images, true) ?? [];
-            foreach ($galleryPaths as $oldPath) {
-                if (file_exists(public_path($oldPath))) {
-                    unlink(public_path($oldPath));
-                }
-                $oldThumb = public_path('uploads/products/' . basename($oldPath));
-                if (file_exists($oldThumb)) {
-                    unlink($oldThumb);
-                }
-            }
-        $product->delete();
-        return redirect()->route('admin.products.index')->with('success','');
+// Delete Product
+public function product_delete($id)
+{
+    $product = Product::findOrFail($id);
+
+    // Delete main image + thumb
+    if ($product->image && file_exists(public_path($product->image))) unlink(public_path($product->image));
+    $thumb = public_path('uploads/products/thumbnails/' . basename($product->image));
+    if (file_exists($thumb)) unlink($thumb);
+
+    // Delete gallery images + thumbs
+    $gallery = json_decode($product->images, true) ?? [];
+    foreach ($gallery as $img) {
+        if (file_exists(public_path($img))) unlink(public_path($img));
+        $thumb = public_path('uploads/products/thumbnails/' . basename($img));
+        if (file_exists($thumb)) unlink($thumb);
     }
+
+    $product->delete();
+    return redirect()->route('admin.products.index')->with('success', 'Product deleted successfully!');
+}
+
 
 
     //function to view coupons 
