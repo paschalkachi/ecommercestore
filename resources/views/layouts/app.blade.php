@@ -351,7 +351,9 @@
         </div>
       </div>
 
-      @guest            
+      <div class="border-top mt-auto pb-2">
+        <div class="customer-links container mt-4 mb-2 pb-1">
+          @guest            
           <div class="header-tools__item hover-container">
             @auth
                 <div class="header-tools__item">
@@ -382,7 +384,7 @@
             </a>
           </div>
           @endguest
-
+        </div>
 
 
 
