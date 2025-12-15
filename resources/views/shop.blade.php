@@ -338,6 +338,7 @@
 
                     {{-- Gallery Product Images --}}
                     <div class="swiper-slide">
+                      {{ dd(get_defined_vars()) }}
                       @foreach(json_decode($product->images, true) as $gallery)         
                         <a href="{{ route('shop.product.details',['product_slug'=>$product->slug]) }}"><img loading="lazy" src="{{ asset($gallery) }}"
                             width="330" height="400" alt="{{ $product->name }}" class="pc__img"></a>
