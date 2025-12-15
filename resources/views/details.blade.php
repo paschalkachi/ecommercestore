@@ -24,22 +24,30 @@
                 </svg>
               </a>
             </div>
-            {{-- <div class="swiper-slide"> --}}
-            @php
-                $galleryImages = is_array($product->images) ? $product->images : [];
-            @endphp
+             @php
+                  $galleryImages = is_array($product->images) ? $product->images : [];
+              @endphp
 
-            @foreach($galleryImages as $gallery)
-                <a href="{{ route('shop.product.details',['product_slug'=>$product->slug]) }}">
-                    <img loading="lazy"
-                        src="{{ asset($gallery) }}"
-                        width="330"
-                        height="400"
-                        alt="{{ $product->name }}"
-                        class="pc__img">
-                </a>
-            @endforeach
-            {{-- </div> --}}
+              @foreach($galleryImages as $gallery)
+                  <a href="{{ asset($gallery) }}">
+                      <img loading="lazy"
+                          src="{{ asset($gallery) }}"
+                          width="674"
+                          height="674"
+                          alt="{{ $product->name }}"
+                          class="h-auto">
+                  </a>
+              @endforeach
+            {{-- @foreach(json_decode($product->images, true) as $gallery)
+            <div class="swiper-slide product-single__image-item">
+              <img loading="lazy" class="h-auto" src="{{ asset($gallery) }}" width="674" height="674" alt="" />
+              <a data-fancybox="gallery" href="{{ asset($gallery) }}" data-bs-toggle="tooltip" data-bs-placement="left" title="Zoom">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <use href="#icon_zoom" />
+                </svg>
+              </a>
+            </div>
+            @endforeach --}}
           </div>
           <div class="swiper-button-prev">
             <svg width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg">
@@ -61,11 +69,22 @@
             <div class="swiper-slide product-single__image-item">
               <img loading="lazy" class="h-auto" src="{{ asset($product->image) }}" width="104" height="104" alt="" />
             </div>
-            @foreach(json_decode($product->images, true) as $gallery)
+            {{-- @foreach(json_decode($product->images, true) as $gallery)
             <div class="swiper-slide product-single__image-item">
               <img loading="lazy" class="h-auto" src="{{ asset($gallery) }}" width="104" height="104" alt="" />
             </div>
-            @endforeach
+            @endforeach --}}
+
+            @foreach($galleryImages as $gallery)
+                  <a href="{{ asset($gallery) }}">
+                      <img loading="lazy"
+                          src="{{ asset($gallery) }}"
+                          width="104"
+                          height="104"
+                          alt="{{ $product->name }}"
+                          class="h-auto">
+                  </a>
+              @endforeach
           </div>
         </div>
       </div>
@@ -406,8 +425,11 @@
               <div class="pc__img-wrapper">
                 <a href="{{ route('shop.product.details',['product_slug'=>$rproduct->slug]) }}">
                   <img loading="lazy" src="{{ asset($rproduct->image) }}" width="330" height="400" alt="{{ $rproduct->name }}" class="pc__img">
-                  @foreach(json_decode($rproduct->images, true) as $gallery)
+                  {{-- @foreach(json_decode($rproduct->images, true) as $gallery)
                     <img loading="lazy" src="{{ asset($gallery) }}" width="330" height="400" alt="{{ $rproduct->name }}" class="pc__img pc__img-second">
+                  @endforeach --}}
+                  @foreach($rproduct->images ?? [] as $gallery)
+                          <img loading="lazy" src="{{ asset($gallery) }}" width="330" height="400" alt="{{ $rproduct->name }}" class="pc__img pc__img-second">
                   @endforeach
                 </a>     
                 @if(Cart::Instance('cart')->content()->where('id',$product->id)->count()>0)
