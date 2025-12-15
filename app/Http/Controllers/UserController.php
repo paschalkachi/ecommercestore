@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Slide;
 use App\Models\Transaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -14,11 +15,12 @@ class UserController extends Controller
     
     public function index()
     {
+    $user = Auth::user();
+    $slides = Slide::all();
+    return view('user.index', compact('user', 'slides'));
+}
 
-        return view("user.index",compact('user','slides'));
-    }
-
-    // function to view orders
+       // function to view orders
     public function orders()
     {
         $orders = Order::where('user_id',Auth::user()->id)->orderBy('created_at', 'DESC')->paginate(10);
