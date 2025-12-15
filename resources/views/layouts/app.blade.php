@@ -351,14 +351,38 @@
         </div>
       </div>
 
-      <div class="border-top mt-auto pb-2">
-        <div class="customer-links container mt-4 mb-2 pb-1">
-          <svg class="d-inline-block align-middle" width="20" height="20" viewBox="0 0 20 20" fill="none"
-            xmlns="http://www.w3.org/2000/svg">
-            <use href="#icon_user" />
-          </svg>
-          <span class="d-inline-block ms-2 text-uppercase align-middle fw-medium">My Account</span>
-        </div>
+      @guest            
+          <div class="header-tools__item hover-container">
+            @auth
+                <div class="header-tools__item">
+                    <span class="text-sm">Welcome, {{ Auth::user()->name }}</span>
+                    <form method="POST" action="{{ route('logout') }}" class="inline">
+                        @csrf
+                        <button type="submit" class="btn-link ml-2">Logout</button>
+                    </form>
+                </div>
+            @else
+                <a href="{{ route("login") }}" class="header-tools__item">
+            @endauth
+              <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <use href="#icon_user" />
+              </svg>
+            </a>
+          </div>
+
+          @else
+          <div class="header-tools__item hover-container">
+            <a href="{{ Auth::user()->utype === 'ADM' ? route('admin.index'): route('user.index') }}" class="header-tools__item">
+              <span class="pr-6px">{{ Auth::user()->name }}</span>
+              <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <use href="#icon_user" />
+              </svg>
+            </a>
+          </div>
+          @endguest
+
 
 
 
